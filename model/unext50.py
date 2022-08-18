@@ -2,6 +2,8 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from fastai.vision.all import *
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class UneXt50(nn.Module):
     def __init__(self, stride=1, **kwargs):

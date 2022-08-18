@@ -19,8 +19,6 @@ def img2tensor(img, dtype: np.dtype = np.float32):
 
 
 class HuBMAPDataset(Dataset):
-    NUM_WORKERS = 3
-
     def __init__(self, fold=TRAIN_CONFIG['fold'], train=True, tfms=None):
         ids = pd.read_csv(TRAIN_CONFIG['LABELS']).id.astype(str).values
         kf = KFold(n_splits=TRAIN_CONFIG['nfolds'], random_state=TRAIN_CONFIG['SEED'], shuffle=True)
