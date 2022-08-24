@@ -33,3 +33,4 @@ https://discuss.pytorch.kr/t/apple-m1-gpu/286/2
 * FastAI 모듈 mps디바이스 지원 하지 않는 에러
 
 export PYTORCH_ENABLE_MPS_FALLBACK=1
+

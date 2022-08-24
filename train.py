@@ -2,7 +2,8 @@ import gc
 import os
 
 from model.evaluate import Dice_th_pred, Model_pred, save_img
-from model.unext50 import UneXt50, split_layers
+# from model.unext50 import UneXt50, split_layers
+from model.unexteffb4 import UneXt50, split_layers
 from data.CustomDataset import HuBMAPDataset, get_aug
 from fastai.vision.all import *
 from util.lossfunc import symmetric_lovasz, Dice_soft, Dice_th
