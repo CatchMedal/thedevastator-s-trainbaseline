@@ -18,18 +18,17 @@ class UneXt50(nn.Module):
         self.enc1, self.enc2, self.enc3, self.enc4, self.enc5, self.enc6, self.enc7\
             = m.layers[0], m.layers[1], m.layers[2], m.layers[3], m.layers[4], m.layers[5], m.layers[6]
         # aspp with customized dilatations
-        self.aspp = ASPP(448, 256, out_c=2048, dilations=[
+        self.aspp = ASPP(448, 256, out_c=512, dilations=[
                          stride*1, stride*2, stride*3, stride*4])
         self.drop_aspp = nn.Dropout2d(0.5)
         # decoder
         # UnetBlock ( 이전 블록의 채널, skip-connection 채널, output 채널)
-        self.dec6, self.dec5, self.dec4, self.dec3, self.dec2, self.dec1 = \
-            UnetBlock(2048, 160, 1024),  UnetBlock(1024, 112, 512), UnetBlock(512, 56, 256), \
-            UnetBlock(256, 32, 128), UnetBlock(128, 24, 64), UnetBlock(64, 48, 32)
+        self.dec4, self.dec3, self.dec2, self.dec1 = \
+            UnetBlock(512, 112, 256),  UnetBlock(256, 56, 128), UnetBlock(128, 32, 64), UnetBlock(64, 48, 32)
 
-        self.fpn = FPN([2048,1024,512,256,128,64,32], [16]*6)
+        self.fpn = FPN([512,256,128,64], [16]*4)
         self.drop = nn.Dropout2d(0.1)
-        self.final_conv = ConvLayer( 32+16*6, 1, ks=1, norm_type=None, act_cls=None)
+        self.final_conv = ConvLayer( 32+16*4, 1, ks=1, norm_type=None, act_cls=None)
 
     def forward(self, x):
         enc0 = self.enc0(x)
@@ -41,13 +40,11 @@ class UneXt50(nn.Module):
         enc6 = self.enc6(enc5)
         enc7 = self.enc7(enc6)
         enc8 = self.aspp(enc7)
-        dec6 = self.dec6(self.drop_aspp(enc8), enc5)
-        dec5 = self.dec5(dec6, enc4)
-        dec4 = self.dec4(dec5, enc3)
-        dec3 = self.dec3(dec4, enc2)
-        dec2 = self.dec2(dec3, enc1)
+        dec4 = self.dec4(self.drop_aspp(enc8), enc4)
+        dec3 = self.dec3(dec4, enc3)
+        dec2 = self.dec2(dec3, enc2)
         dec1 = self.dec1(dec2, enc0)
-        x = self.fpn([enc8, dec6, dec5, dec4, dec3, dec2], dec1)
+        x = self.fpn([enc8, dec4, dec3, dec2], dec1)
         x = self.final_conv(self.drop(x))
         x = F.interpolate(x, scale_factor=2, mode='bilinear')
         return x
@@ -58,8 +55,7 @@ def split_layers(m): return [list(m.enc0.parameters())+list(m.enc1.parameters())
                              list(m.enc2.parameters())+list(m.enc3.parameters()) +
                              list(m.enc4.parameters())+list(m.enc5.parameters()) +
                              list(m.enc6.parameters())+list(m.enc7.parameters()),
-                             list(m.aspp.parameters())+list(m.dec6.parameters())+
-                             list(m.dec5.parameters())+list(m.dec4.parameters()) +
+                             list(m.aspp.parameters())+list(m.dec4.parameters()) +
                              list(m.dec3.parameters())+list(m.dec2.parameters()) +
                              list(m.dec1.parameters())+list(m.fpn.parameters()) +
                              list(m.final_conv.parameters())]
