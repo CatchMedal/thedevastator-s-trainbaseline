@@ -1,7 +1,12 @@
 https://www.kaggle.com/code/thedevastator/training-fastai-baseline
 
-# Info
+# 모델
 
+![img](https://user-images.githubusercontent.com/30853787/186518724-9df184f7-9d14-4d1f-9653-0b02bd25069f.jpg)
+
+UNext50의 backbone인 ResNet50을 EfficientNet_b4로 전환, 다이어그램에서 FPN은 생략되었습니다.
+
+# Mac 에서 돌려보기
 * MPS란? Cuda, 와 같은 선상의 개념 https://dong-life.tistory.com/112
 ### 맥북 덮고 사용
 https://ssumer.com/%ED%84%B0%EB%AF%B8%EB%84%90-%EB%AA%85%EB%A0%B9-%EB%9A%9C%EA%BB%91-%EB%8B%AB%EA%B3%A0-%EB%A7%A5%EB%B6%81-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/
