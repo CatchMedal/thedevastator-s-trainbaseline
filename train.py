@@ -33,7 +33,7 @@ for fold in range(TRAIN_CONFIG['nfolds']):
     learn.unfreeze()
     learn.fit_one_cycle(TRAIN_CONFIG["unfreeze_epoch"], lr_max=slice(2e-4,2e-3),
         cbs=SaveModelCallback(monitor='dice_th',comp=np.greater))
-    torch.save(learn.model.state_dict(),f'model_{fold}.pth')
+    torch.save(learn.model,f'model_{fold}.pth')
     
     #model evaluation on val and saving the masks
     mp = Model_pred(learn.model,learn.dls.loaders[1])
