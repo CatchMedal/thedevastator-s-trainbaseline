@@ -10,5 +10,5 @@ TRAIN_CONFIG = {
     'ENABLE_CUDA':False,
     "DEVICE":"cuda",
     "freeze_epoch":4,
-    "unfreeze_epoch":10
+    "unfreeze_epoch":20
 }

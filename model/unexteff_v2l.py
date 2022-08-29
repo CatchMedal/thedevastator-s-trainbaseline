@@ -3,27 +3,26 @@ UNext Backbone  - EfficientNet
 """
 import torch
 from torch import nn
+from torchvision.models import efficientnet_v2_l
 import torch.nn.functional as F
 from fastai.vision.all import *
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
 
 class UneXt50(nn.Module):
     def __init__(self, stride=1, **kwargs):
         super().__init__()
         # encoder
-        m = ef_b4 = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub', 'nvidia_efficientnet_b4', pretrained=True)
-        self.enc0 = nn.Sequential(m.stem.conv, m.stem.bn, m.stem.activation)
-        self.enc1, self.enc2, self.enc3, self.enc4, self.enc5, self.enc6, self.enc7\
-            = m.layers[0], m.layers[1], m.layers[2], m.layers[3], m.layers[4], m.layers[5], m.layers[6]
+        m = efficientnet_v2_l()
+        
+        self.enc0, self.enc1, self.enc2, self.enc3, self.enc4, self.enc5, self.enc6, self.enc7\
+            = m.features[0], m.features[1], m.features[2], m.features[3], m.features[4], m.features[5], m.features[6], m.features[7]
         # aspp with customized dilatations
-        self.aspp = ASPP(448, 256, out_c=512, dilations=[
+        self.aspp = ASPP(640, 256, out_c=512, dilations=[
                          stride*1, stride*2, stride*3, stride*4])
         self.drop_aspp = nn.Dropout2d(0.5)
         # decoder
         # UnetBlock ( 이전 블록의 채널, skip-connection 채널, output 채널)
         self.dec4, self.dec3, self.dec2, self.dec1 = \
-            UnetBlock(512, 112, 256),  UnetBlock(256, 56, 128), UnetBlock(128, 32, 64), UnetBlock(64, 48, 32)
+            UnetBlock(512, 192, 256),  UnetBlock(256, 96, 128), UnetBlock(128, 64, 64), UnetBlock(64, 32, 32)
 
         self.fpn = FPN([512,256,128,64], [16]*4)
         self.drop = nn.Dropout2d(0.1)
