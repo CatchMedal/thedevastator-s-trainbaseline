@@ -1,3 +1,6 @@
 input/hubmap-2022-256x256/*
 *.pyc
 models/*
+
+wandb/*
+example/wandb/*

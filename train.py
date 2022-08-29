@@ -1,5 +1,6 @@
 import gc
 import os
+import wandb
 
 from model.evaluate import Dice_th_pred, Model_pred, save_img
 # from model.unext50 import UneXt50, split_layers
@@ -10,6 +11,8 @@ from fastai.vision.all import *
 from util.lossfunc import symmetric_lovasz, Dice_soft, Dice_th
 from config import TRAIN_CONFIG
 
+wandb.login()
+wandb.init(project="hubmap-unext", entity="mglee_")
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"]="1"
 # export PYTORCH_ENABLE_MPS_FALLBACK=1
 dice = Dice_th_pred(np.arange(0.2,0.7,0.01))
@@ -42,4 +45,5 @@ for fold in range(TRAIN_CONFIG['nfolds']):
         for p in progress_bar(mp):
             dice.accumulate(p[0],p[1])
             save_img(p[0],p[2],out)
+            wandb.log({'p0':p[0], 'p1':p[1]})
     gc.collect()
