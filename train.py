@@ -60,4 +60,5 @@ for fold in range(TRAIN_CONFIG['nfolds']):
             save_img(p[0],p[2],out)
             wandb.log({'p0':p[0], 'p1':p[1]})
             gc.collect()
+            torch.cuda.empty_cache()
     gc.collect()
