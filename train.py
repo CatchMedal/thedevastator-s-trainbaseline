@@ -38,10 +38,6 @@ def CleanGPU(t):
     gc.collect()
     torch.cuda.empty_cache()
 
-    cuda.select_device(0)
-    cuda.close()
-    cuda.select_device(0)
-
     print("GPU Usage after emptying the cache")
     gpu_usage()
 
