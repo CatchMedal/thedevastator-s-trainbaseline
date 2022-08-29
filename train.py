@@ -59,4 +59,5 @@ for fold in range(TRAIN_CONFIG['nfolds']):
             dice.accumulate(p[0],p[1])
             save_img(p[0],p[2],out)
             wandb.log({'p0':p[0], 'p1':p[1]})
+            gc.collect()
     gc.collect()
