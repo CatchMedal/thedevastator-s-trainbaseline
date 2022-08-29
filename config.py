@@ -1,5 +1,5 @@
 TRAIN_CONFIG = {
-    'bs': 64,
+    'bs': 32,
     'nfolds': 4,
     'fold': 0,
     'SEED': 2021,
