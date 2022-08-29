@@ -4,12 +4,12 @@ import wandb
 from model.evaluate import Dice_th_pred, Model_pred, save_img
 # from model.unext50 import UneXt50, split_layers
 # from model.unexteffb4 import UneXt50, split_layers
-from model.unexteff_v2l import UneXt50, split_layers
+# from model.unexteff_v2l import UneXt50, split_layers
+from model.unexteff_b7 import UneXt50, split_layers
 from data.CustomDataset import HuBMAPDataset, get_aug
 from fastai.vision.all import *
 from util.lossfunc import symmetric_lovasz, Dice_soft, Dice_th
 from config import TRAIN_CONFIG
-from config import LOCAL_CONFIG
 
 argv = sys.argv
 opts, etc_args = getopt.getopt(argv[1:],"e:",["env="])
@@ -19,10 +19,9 @@ for opt, arg in opts:
         user_secrets = UserSecretsClient()
         wandb_api = user_secrets.get_secret("wandb_api") 
         wandb.login(key=wandb_api)
-    elif arg == 'local':
-        TRAIN_CONFIG = LOCAL_CONFIG
+    elif arg == 'COLAB': #Colab, GCP, Etc,,,
         wandb.login()
-    else: #Colab, GCP, Etc,,,
+    else: #For Local ENV
         wandb.login()
 
 wandb.init(project="hubmap-unext", entity="mglee_")
