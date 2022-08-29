@@ -1,5 +1,4 @@
-import gc
-import os
+import gc, os, sys, getopt
 import wandb
 
 from model.evaluate import Dice_th_pred, Model_pred, save_img
@@ -10,10 +9,25 @@ from data.CustomDataset import HuBMAPDataset, get_aug
 from fastai.vision.all import *
 from util.lossfunc import symmetric_lovasz, Dice_soft, Dice_th
 from config import TRAIN_CONFIG
+from config import LOCAL_CONFIG
 
-wandb.login()
+argv = sys.argv
+opts, etc_args = getopt.getopt(argv[1:],"e:",["env="])
+for opt, arg in opts:
+    if arg == 'kaggle':
+        from kaggle_secrets import UserSecretsClient
+        user_secrets = UserSecretsClient()
+        wandb_api = user_secrets.get_secret("wandb_api") 
+        wandb.login(key=wandb_api)
+    elif arg == 'local':
+        TRAIN_CONFIG = LOCAL_CONFIG
+        wandb.login()
+    else: #Colab, GCP, Etc,,,
+        wandb.login()
+
 wandb.init(project="hubmap-unext", entity="mglee_")
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"]="1"
+
 # export PYTORCH_ENABLE_MPS_FALLBACK=1
 dice = Dice_th_pred(np.arange(0.2,0.7,0.01))
 for fold in range(TRAIN_CONFIG['nfolds']):
