@@ -60,10 +60,13 @@ for fold in range(TRAIN_CONFIG['nfolds']):
         param.requires_grad = False
     learn.fit_one_cycle(TRAIN_CONFIG["freeze_epoch"], lr_max=0.5e-2)
 
+    CleanGPU(1)
     #continue training full model
     learn.unfreeze()
     learn.fit_one_cycle(TRAIN_CONFIG["unfreeze_epoch"], lr_max=slice(2e-4,2e-3),
         cbs=SaveModelCallback(monitor='dice_th',comp=np.greater))
+
+    CleanGPU()
     torch.save(learn.model.state_dict(),f'model_{fold}.pth')
     
     #model evaluation on val and saving the masks
