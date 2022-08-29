@@ -16,4 +16,8 @@ ef_b7_tv = efficientnet_b7()
 # summary(resnext50,input_size=(64,3,256,256))
 #summary(ef_b4,input_size=(64,3,256,256)) 
 # summary(ef_b4,input_size=(64,3,256,256) )
-print(ef_v2l_tv.features[0].Conv2dNormActivation) 
+# print(ef_v2l_tv.features[0].Conv2dNormActivation) 
+
+
+model = torch.load('../models/model_0.pth')
+print(model)
