@@ -3,9 +3,9 @@ import wandb
 
 from model.evaluate import Dice_th_pred, Model_pred, save_img
 # from model.unext50 import UneXt50, split_layers
-from model.unexteffb4 import UneXt50, split_layers
-# from model.unexteff_v2l import UneXt50, split_layers
-# from model.unexteff_b7 import UneXt50, split_layers
+# from model.unexteffb4 import UneXt50, split_layers
+# from model.unexteff_v2 import UneXt50, split_layers
+from model.unexteff_b7 import UneXt50, split_layers
 from data.CustomDataset import HuBMAPDataset, get_aug
 from fastai.vision.all import *
 from fastai.basics import Callback
@@ -34,10 +34,6 @@ def CleanGPU(t):
     gc.collect()
     torch.cuda.empty_cache()
 
-# def LogMetric(pred,loss):
-#     wandb.log({'pred':pred, 'loss':loss })
-
-
 # export PYTORCH_ENABLE_MPS_FALLBACK=1
 dice = Dice_th_pred(np.arange(0.2,0.7,0.01))
 for fold in range(TRAIN_CONFIG['nfolds']):
@@ -62,7 +58,7 @@ for fold in range(TRAIN_CONFIG['nfolds']):
     learn.unfreeze()
     learn.fit_one_cycle(TRAIN_CONFIG["unfreeze_epoch"], lr_max=slice(2e-4,2e-3),
         cbs=SaveModelCallback(monitor='dice_th',comp=np.greater))
-    torch.save(learn.model,f'model_{fold}.pth')
+    torch.save(learn.model.state_dict(),f'model_{fold}.pth')
     
     #model evaluation on val and saving the masks
     mp = Model_pred(learn.model,learn.dls.loaders[1])
