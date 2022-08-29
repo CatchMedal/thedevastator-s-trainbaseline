@@ -1,5 +1,7 @@
 import gc, os, sys, getopt
 import wandb
+from GPUtil import showUtilization as gpu_usage
+from numba import cuda
 
 from model.evaluate import Dice_th_pred, Model_pred, save_img
 # from model.unext50 import UneXt50, split_layers
@@ -30,9 +32,18 @@ wandb.init(project="hubmap-unext", entity="mglee_")
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"]="1"
 
 def CleanGPU(t):
-    print('cleangpu positional arg',t)
+
+    gpu_usage()                             
+
     gc.collect()
     torch.cuda.empty_cache()
+
+    cuda.select_device(0)
+    cuda.close()
+    cuda.select_device(0)
+
+    print("GPU Usage after emptying the cache")
+    gpu_usage()
 
 # export PYTORCH_ENABLE_MPS_FALLBACK=1
 dice = Dice_th_pred(np.arange(0.2,0.7,0.01))
