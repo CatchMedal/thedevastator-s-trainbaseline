@@ -6,9 +6,9 @@ TRAIN_CONFIG = {
     'TRAIN': 'input/hubmap-2022-256x256/train/',
     'MASKS': 'input/hubmap-2022-256x256/masks/',
     'LABELS': 'input/hubmap-organ-segmentation/train.csv',
-    'NUM_WORKERS': 4,
+    'NUM_WORKERS': 0,
     'ENABLE_CUDA':False,
-    "DEVICE":"cuda",
+    "DEVICE":"mps",
     "freeze_epoch":4,
     "unfreeze_epoch":20
 }
