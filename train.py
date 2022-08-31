@@ -1,6 +1,6 @@
 import gc, os, sys, getopt
-import wandb
 from GPUtil import showUtilization as gpu_usage
+import wandb
 
 from model.evaluate import Dice_th_pred, Model_pred, save_img
 # from model.unext50 import UneXt50, split_layers

@@ -3,7 +3,7 @@ UNext Backbone  - EfficientNet
 """
 import torch
 from torch import nn
-from torchvision.models import efficientnet_b7, EfficientNet_B7_Weights
+from torchvision.models import efficientnet_b7
 import torch.nn.functional as F
 from fastai.vision.all import *
 import ssl
@@ -13,7 +13,7 @@ class UneXt50(nn.Module):
     def __init__(self, stride=1, **kwargs):
         super().__init__()
         # encoder
-        m = efficientnet_b7(EfficientNet_B7_Weights)
+        m = efficientnet_b7(pretrained=True)
         
         self.enc0, self.enc1, self.enc2, self.enc3, self.enc4, self.enc5, self.enc6, self.enc7\
             = m.features[0], m.features[1], m.features[2], m.features[3], m.features[4], m.features[5], m.features[6], m.features[7]

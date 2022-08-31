@@ -6,7 +6,12 @@ https://www.kaggle.com/code/thedevastator/training-fastai-baseline
 
 UNext50의 backbone인 ResNet50을 EfficientNet_b4로 전환, 다이어그램에서 FPN은 생략되었습니다.
 
+# Conda로 Kaggle/Colab 가상환경 만들기
 
+* Conda 설치
+* 여기있는 환경 기반으로 가상환경 만들기  
+https://github.com/Kaggle/docker-python/blob/main/config.txt
+https://github.com/Kaggle/docker-python/blob/main/config.txt
 
 # Kaggle Inference Submission 이슈 
 
@@ -72,6 +77,10 @@ ssl._create_default_https_context = ssl._create_unverified_context
 ```
 
 ### GPU 이슈
+**08.18 CPU로는 학습이 너무 느려, m1 도입된 GPU인 mps를 시도했지만, gpu만큼 속도가 나오지 않음**
+**체감상으론, CPU <<<< MPS <<<<<<<<<<<<GPU, mps도 전체 학습을 돌리면 맥북에 무리가 오므로, 테스트용으로만 사용**
+
+**0831 kaggle의 컨테이너가 torch@1.11.0을 사용하는데, Mps device는 1.12.0부터 지원하므로, 가상환경 구축이 힘듦. 이후로는 로컬 테스트도 CPU로 진행**
 * gpu 가속 사용하지 않은 상태에서 num_workers > 0이면, 에러 발생!
 
 ### ㅡ
