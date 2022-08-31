@@ -1,5 +1,5 @@
 EfficientNet(
-  (_conv_stem): Conv2dStaticSamePadding(
+  (_conv_): Conv2dStaticSamePadding(
     3, 48, kernel_size=(3, 3), stride=(2, 2), bias=False
     (static_padding): ZeroPad2d((0, 1, 0, 1))
   )

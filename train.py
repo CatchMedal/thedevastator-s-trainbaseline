@@ -47,7 +47,7 @@ for fold in range(TRAIN_CONFIG['nfolds']):
     ds_v = HuBMAPDataset(fold=fold, train=False)
     data = ImageDataLoaders.from_dsets(ds_t,ds_v,bs=TRAIN_CONFIG['bs'],
                 num_workers=TRAIN_CONFIG['NUM_WORKERS'],pin_memory=True).to(TRAIN_CONFIG['DEVICE'])
-    model = UneXt50().to(TRAIN_CONFIG['DEVICE'])
+    model = UneXt50(stride=3).to(TRAIN_CONFIG['DEVICE'])
     
     learn = Learner(data, model, loss_func=symmetric_lovasz,
                 metrics=[Dice_soft(),Dice_th()], 
