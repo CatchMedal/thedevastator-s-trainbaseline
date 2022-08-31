@@ -3,10 +3,10 @@ import wandb
 from GPUtil import showUtilization as gpu_usage
 
 from model.evaluate import Dice_th_pred, Model_pred, save_img
-from model.unext50 import UneXt50, split_layers
+# from model.unext50 import UneXt50, split_layers
 # from model.unexteffb4 import UneXt50, split_layers
 # from model.unexteff_v2l import UneXt50, split_layers
-# from model.unexteff_b7 import UneXt50, split_layers
+from model.unexteff_b7 import UneXt50, split_layers
 from data.CustomDataset import HuBMAPDataset, get_aug
 from fastai.vision.all import *
 from fastai.basics import Callback
