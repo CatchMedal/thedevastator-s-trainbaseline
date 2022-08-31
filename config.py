@@ -8,7 +8,7 @@ TRAIN_CONFIG = {
     'LABELS': 'input/hubmap-organ-segmentation/train.csv',
     'NUM_WORKERS': 4,
     'ENABLE_CUDA':False,
-    "DEVICE":"gpu",
+    "DEVICE":"cuda",
     "freeze_epoch":4,
     "unfreeze_epoch":15
 }
