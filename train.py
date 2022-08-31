@@ -14,21 +14,6 @@ from fastai.callback.wandb import *
 from util.lossfunc import symmetric_lovasz, Dice_soft, Dice_th
 from config import TRAIN_CONFIG
 
-argv = sys.argv
-opts, etc_args = getopt.getopt(argv[1:],"e:",["env="])
-for opt, arg in opts:
-    if arg == 'kaggle':
-        from kaggle_secrets import UserSecretsClient
-        user_secrets = UserSecretsClient()
-        wandb_api = user_secrets.get_secret("wandb_api") 
-        wandb.login(key=wandb_api)
-    elif arg == 'COLAB': #Colab, GCP, Etc,,,
-        wandb.login()
-    else: #For Local ENV
-        wandb.login()
-
-wandb.init(project="hubmap-unext", entity="mglee_")
-os.environ["PYTORCH_ENABLE_MPS_FALLBACK"]="1"
 
 def CleanGPU(t):
 
@@ -40,6 +25,27 @@ def CleanGPU(t):
     print("GPU Usage after emptying the cache")
     gpu_usage()
 
+
+argv = sys.argv
+opts, etc_args = getopt.getopt(argv[1:],"e:",["env="])
+learnler_cbs=[Callback(after_epoch=CleanGPU)]
+for opt, arg in opts:
+    if arg == 'kaggle':
+        from kaggle_secrets import UserSecretsClient
+        user_secrets = UserSecretsClient()
+        wandb_api = user_secrets.get_secret("wandb_api") 
+        wandb.login(key=wandb_api)
+        wandb.init(project="hubmap-unext", entity="mglee_")
+        learnler_cbs.append(WandbCallback())
+    elif arg == 'colab': #Colab, GCP, Etc,,,
+        wandb.login()
+        learnler_cbs.append(WandbCallback())
+        wandb.init(project="hubmap-unext", entity="mglee_")
+    else: #For Local ENV
+        pass
+
+os.environ["PYTORCH_ENABLE_MPS_FALLBACK"]="1"
+
 # export PYTORCH_ENABLE_MPS_FALLBACK=1
 dice = Dice_th_pred(np.arange(0.2,0.7,0.01))
 for fold in range(TRAIN_CONFIG['nfolds']):
@@ -47,11 +53,11 @@ for fold in range(TRAIN_CONFIG['nfolds']):
     ds_v = HuBMAPDataset(fold=fold, train=False)
     data = ImageDataLoaders.from_dsets(ds_t,ds_v,bs=TRAIN_CONFIG['bs'],
                 num_workers=TRAIN_CONFIG['NUM_WORKERS'],pin_memory=True).to(TRAIN_CONFIG['DEVICE'])
-    model = UneXt50(stride=3).to(TRAIN_CONFIG['DEVICE'])
+    model = UneXt50().to(TRAIN_CONFIG['DEVICE'])
     
     learn = Learner(data, model, loss_func=symmetric_lovasz,
                 metrics=[Dice_soft(),Dice_th()], 
-                splitter=split_layers, cbs=[Callback(after_epoch=CleanGPU), WandbCallback()]).to_fp16()
+                splitter=split_layers, cbs=learnler_cbs).to_fp16()
     
     #memory optimization code
     #start with training the head
