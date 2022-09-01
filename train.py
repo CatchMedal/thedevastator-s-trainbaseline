@@ -61,15 +61,16 @@ for fold in range(TRAIN_CONFIG['nfolds']):
     
     #memory optimization code
     #start with training the head
-    learn.freeze_to(-1) #doesn't work
-    for param in learn.opt.param_groups[0]['params']:
-        param.requires_grad = False
-    learn.fit_one_cycle(TRAIN_CONFIG["freeze_epoch"], lr_max=0.5e-2)
+    with learn.no_bar():
+        learn.freeze_to(-1) #doesn't work
+        for param in learn.opt.param_groups[0]['params']:
+            param.requires_grad = False
+        learn.fit_one_cycle(TRAIN_CONFIG["freeze_epoch"], lr_max=0.5e-2)
 
-    #continue training full model
-    learn.unfreeze()
-    learn.fit_one_cycle(TRAIN_CONFIG["unfreeze_epoch"], lr_max=slice(2e-4,2e-3),
-        cbs=SaveModelCallback(monitor='dice_th',comp=np.greater))
+        #continue training full model
+        learn.unfreeze()
+        learn.fit_one_cycle(TRAIN_CONFIG["unfreeze_epoch"], lr_max=slice(2e-4,2e-3),
+            cbs=SaveModelCallback(monitor='dice_th',comp=np.greater))
 
     torch.save(learn.model.state_dict(),f'model_{fold}.pth')
     
